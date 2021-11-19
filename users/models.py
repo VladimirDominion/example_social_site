@@ -94,4 +94,3 @@ class User(LifecycleModelMixin, AbstractBaseUser, PermissionsMixin):
     def user_created(self):
         """ Do some staff after create """
 
-
