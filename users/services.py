@@ -1,6 +1,7 @@
 from typing import Dict
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
@@ -21,4 +22,7 @@ def sign_up_user(*, user_data: Dict):
 
 
 def login(*, user_credentials):
-    pass
+    user = authenticate(**user_credentials)
+    if not user or not user.is_active:
+        return
+    return user

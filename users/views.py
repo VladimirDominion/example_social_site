@@ -11,6 +11,7 @@ from users import services as user_services
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.filter().prefetch_related()
+    serializer_class = user_serializers.UserDetailSerializer
     ALLOWED_ACTIONS = ['login', 'sign_up']
     PROTECTED_ACTIONS = ['me', 'update', 'partial_update']
 
@@ -46,11 +47,24 @@ class UserViewSet(viewsets.ModelViewSet):
         response_data.update(user_services.get_tokens_for_user(user=user))
         return Response(response_data, status=status.HTTP_201_CREATED)
 
+    @action(
+        methods=['POST'],
+        detail=False,
+        serializer_class=user_serializers.LoginSerializer
+    )
     def login(self, request):
-        """
-        1. Создать сериалайзер
-        2. Валидировать данные
-        3. Получить юзера
-        :param request:
-        :return:
-        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user_credentials = serializer.validated_data
+        user = user_services.login(user_credentials=user_credentials)
+        if not user:
+            return Response({'message': 'User with this credentials not found'}, status=status.HTTP_400_BAD_REQUEST)
+        response_data = user_serializers.UserDetailSerializer(user).data
+        response_data.update(user_services.get_tokens_for_user(user=user))
+        return Response(response_data)
+
+    @action(methods=['GET'], detail=False)
+    def me(self, request):
+        response_data = user_serializers.UserDetailSerializer(request.user).data
+        return Response(response_data)
+
