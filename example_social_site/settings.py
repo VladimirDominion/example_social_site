@@ -42,9 +42,11 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'django_extensions',
     'drf_yasg',
+    'mptt',
 
     'users',
     'core',
+    'posts',
 ]
 
 MIDDLEWARE = [

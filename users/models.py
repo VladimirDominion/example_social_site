@@ -48,7 +48,7 @@ class User(LifecycleModelMixin, AbstractBaseUser, PermissionsMixin):
         FEMALE = 'FEMALE', 'Female'
         ANOTHER = 'ANOTHER', 'Another'
 
-    file_folder = 'images'
+    file_folder = 'avatars'
     email = models.EmailField(max_length=254, unique=True)
     first_name = models.CharField(max_length=64, blank=True)
     last_name = models.CharField(max_length=64, blank=True)

@@ -1,11 +1,12 @@
-from django.db import models
-from django.utils import timezone
 import os
 from uuid import uuid4
 
+from django.db import models
+from django.utils import timezone
+
 
 def path_and_rename(instance, filename):
-    upload_to = 'images' if not instance.file_folder else instance.file_folder
+    upload_to = getattr(instance, 'file_folder', 'images')
     ext = filename.split('.')[-1]
     # get filename
     filename = '{}.{}'.format(uuid4().hex, ext)
