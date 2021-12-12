@@ -21,18 +21,18 @@ class Tag(LifecycleModelMixin, models.Model):
 class Post(LifecycleModelMixin, BaseCreatedUpdatedModel):
     # folder name for upload post images for example: /media/posts/<file_name>.jpg
     file_folder = 'posts'
-    author = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='posts')
+    author = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='posts', blank=True, null=True)
     title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True, max_length=250)
+    slug = models.SlugField(unique=True, max_length=250, blank=True, default='')
     text = models.TextField()
     image = models.ImageField(upload_to=path_and_rename, blank=True, default='')
-    tags = models.ManyToManyField(Tag, related_name='posts')
+    tags = models.ManyToManyField(Tag, related_name='posts', blank=True)
     published = models.BooleanField(default=False, null=True)
 
     @hook(BEFORE_SAVE)
     def set_slug(self):
         if not self.slug:
-            self.slug = f'{slugify(self.name)}_{uuid.uuid4().hex}'
+            self.slug = f'{slugify(self.title)}_{uuid.uuid4().hex}'
 
 
 class PostComment(MPTTModel, BaseCreatedUpdatedModel):
