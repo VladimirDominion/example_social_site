@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.decorators import action
 
 from posts.models import Post
 from posts.serialisers import PostSerializer
@@ -16,7 +17,7 @@ class PostViewSet(viewsets.ModelViewSet):
         permission_classes = []
         if self.action in ['list', 'retrieve']:
             permission_classes.append(AllowAny)
-        elif self.action == 'create':
+        elif self.action in ['create', 'like']:
             permission_classes.append(IsAuthenticated)
         elif self.action in ['update', 'partial_update', 'destroy']:
             permission_classes.append(IsAuthor)
@@ -31,6 +32,10 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+    @action(methods=['POST'], detail=True)
+    def like(self, request, pk=None):
+        pass
 
 
 

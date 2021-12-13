@@ -1,7 +1,7 @@
 import uuid
 
 from django.db import models
-from django_lifecycle import LifecycleModelMixin, hook, BEFORE_SAVE
+from django_lifecycle import LifecycleModelMixin, hook, BEFORE_SAVE, AFTER_CREATE
 from django.utils.text import slugify
 from mptt.models import MPTTModel, TreeForeignKey
 
@@ -28,11 +28,22 @@ class Post(LifecycleModelMixin, BaseCreatedUpdatedModel):
     image = models.ImageField(upload_to=path_and_rename, blank=True, default='')
     tags = models.ManyToManyField(Tag, related_name='posts', blank=True)
     published = models.BooleanField(default=False, null=True)
+    count_likes = models.BigIntegerField(default=0, blank=True, null=True)
 
     @hook(BEFORE_SAVE)
     def set_slug(self):
         if not self.slug:
             self.slug = f'{slugify(self.title)}_{uuid.uuid4().hex}'
+
+
+class PostLike(LifecycleModelMixin, BaseCreatedUpdatedModel):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
+    author = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='user_likes')
+
+    @hook(AFTER_CREATE)
+    def count_likes(self):
+        self.post.count_likes = PostLike.objects.filter(post=self.post).count()
+        self.post.save()
 
 
 class PostComment(MPTTModel, BaseCreatedUpdatedModel):

@@ -3,6 +3,7 @@ from typing import Dict
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import serializers
 
 
 User = get_user_model()
@@ -26,3 +27,8 @@ def login(*, user_credentials):
     if not user or not user.is_active:
         return
     return user
+
+
+def change_password(user, password):
+    user.set_password(password)
+    user.save()

@@ -13,7 +13,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.filter().prefetch_related()
     serializer_class = user_serializers.UserDetailSerializer
     ALLOWED_ACTIONS = ['login', 'sign_up']
-    PROTECTED_ACTIONS = ['me', 'update', 'partial_update']
+    PROTECTED_ACTIONS = ['me', 'update', 'partial_update', 'change_password']
 
     def get_permissions(self):
         permission_classes = []
@@ -67,4 +67,16 @@ class UserViewSet(viewsets.ModelViewSet):
     def me(self, request):
         response_data = user_serializers.UserDetailSerializer(request.user).data
         return Response(response_data)
+
+    @action(
+        methods=['POST'],
+        detail=False,
+        serializer_class=user_serializers.ChangePasswordSerializer
+    )
+    def change_password(self, request):
+        serializer = self.get_serializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        user_services.change_password(user=request.user, password=data['new_password'])
+        return Response({'message': 'Password successfully changed'})
 
