@@ -29,4 +29,10 @@ class TestPostViewSet(BaseAPITestCase):
         self.assertEqual(post_data['text'], json_data['text'])
         self.assertEqual(len(json_data['tags']), 2)
 
+    def test_comments(self):
+        url = reverse('post-comments')
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+
 
