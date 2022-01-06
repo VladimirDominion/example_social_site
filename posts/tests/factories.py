@@ -1,7 +1,7 @@
 import factory
 
 from posts.models import Tag, Post, PostComment
-
+from users.tests.factories import UserFactory
 
 
 class TagFactory(factory.django.DjangoModelFactory):
@@ -17,6 +17,7 @@ class PostFactory(factory.django.DjangoModelFactory):
 
     title = factory.faker.Faker('title')
     text = factory.faker.Faker('text')
+    author = factory.SubFactory(UserFactory)
 
 
 class PostCommentFactory(factory.django.DjangoModelFactory):
@@ -24,3 +25,4 @@ class PostCommentFactory(factory.django.DjangoModelFactory):
         model = PostComment
 
     text = factory.faker.Faker('text')
+    author = factory.SubFactory(UserFactory)
