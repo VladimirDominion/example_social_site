@@ -7,6 +7,7 @@ from users.models import User
 from users.permissions import IsOwner
 from users import serializers as user_serializers
 from users import services as user_services
+from users.tasks import user_login
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -61,6 +62,7 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response({'message': 'User with this credentials not found'}, status=status.HTTP_400_BAD_REQUEST)
         response_data = user_serializers.UserDetailSerializer(user).data
         response_data.update(user_services.get_tokens_for_user(user=user))
+        user_login.applay_async(args=[1], queue='import_queue')
         return Response(response_data)
 
     @action(methods=['GET'], detail=False)

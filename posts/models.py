@@ -22,7 +22,7 @@ class Post(LifecycleModelMixin, BaseCreatedUpdatedModel):
     # folder name for upload post images for example: /media/posts/<file_name>.jpg
     file_folder = 'posts'
     author = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='posts', blank=True, null=True)
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, db_index=True)
     slug = models.SlugField(unique=True, max_length=250, blank=True, default='')
     text = models.TextField()
     image = models.ImageField(upload_to=path_and_rename, blank=True, default='')
