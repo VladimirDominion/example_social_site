@@ -45,10 +45,12 @@ INSTALLED_APPS = [
     'mptt',
     'django_celery_results',
     'django_celery_beat',
+    'channels',
 
     'users',
     'core',
     'posts',
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -80,7 +82,17 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'example_social_site.wsgi.application'
+
+ASGI_APPLICATION = 'example_social_site.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 
 # Database
