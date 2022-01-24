@@ -87,6 +87,7 @@ py==1.11.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.21
+pydentic==0.0.1.dev3
 Pygments==2.10.0
 PyJWT==2.3.0
 pyOpenSSL==21.0.0
@@ -96,6 +97,7 @@ pytest==6.2.5
 pytest-django==4.4.0
 python-crontab==2.6.0
 python-dateutil==2.8.2
+python-stdnum==1.17
 pytz==2021.3
 pyzmq==22.3.0
 redis==4.1.0
