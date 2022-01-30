@@ -26,3 +26,7 @@ class GroupCreateSerializer(serializers.Serializer):
 
 class IdListSerializers(serializers.Serializer):
     ids = serializers.ListField(child=serializers.IntegerField())
+
+
+class MessageSerializers(serializers.Serializer):
+    message = serializers.CharField(max_length=250, min_length=2)

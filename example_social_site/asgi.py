@@ -12,12 +12,18 @@ import os
 from django.core.asgi import get_asgi_application
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
+from django.conf.urls import url
+
+from chat.consumers import GroupListConsumer, GroupConsumer
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'example_social_site.settings')
 
 application = ProtocolTypeRouter({
   "http": get_asgi_application(),
   "websocket": AuthMiddlewareStack(
-        URLRouter()
+        URLRouter([
+            url(r"^chat/groups/$", GroupListConsumer.as_asgi()),
+            url(r"^chat/groups/(?P<group_id>\w+)/$", GroupConsumer.as_asgi()),
+        ])
     ),
 })
